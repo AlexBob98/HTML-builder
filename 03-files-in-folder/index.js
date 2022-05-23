@@ -4,7 +4,6 @@ const folder = (path.join(__dirname, 'secret-folder'));
 
 const fold = (path.join(__dirname, 'secret-folder'));
  a = fold.split('\\')
-console.log(a[a.length - 1])
 
 console.log('\x1b[36m%s\x1b[0m','File - Extension - Size:', "\x1b[37m")
 fs.readdir(folder, (err, files) => {
