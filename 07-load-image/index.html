@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Загрузка изображения</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    .upload-area {
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input[type="file"] {
+      margin: 10px 0;
+    }
+    #preview {
+      margin-top: 20px;
+      max-width: 100%;
+      display: none;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Загрузи своё фото</h1>
+
+  <div class="upload-area">
+    <input type="file" id="photoInput" accept="image/*" />
+    <button onclick="uploadFile()">Загрузить</button>
+    <p id="status"></p>
+  </div>
+
+  <img id="preview" alt="Предпросмотр" />
+
+  <script>
+    async function uploadFile() {
+      const input = document.getElementById('photoInput');
+      const status = document.getElementById('status');
+      const preview = document.getElementById('preview');
+
+      if (!input.files[0]) {
+        status.className = 'error';
+        status.textContent = 'Выберите файл!';
+        return;
+      }
+
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append('photo', file);
+
+      status.className = '';
+      status.textContent = 'Загрузка...';
+
+      try {
+        const res = await fetch('/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          status.className = 'success';
+          status.textContent = '✅ Успешно загружено!';
+          preview.src = result.url;
+          preview.style.display = 'block';
+        } else {
+          throw new Error(result.message || 'Ошибка сервера');
+        }
+      } catch (err) {
+        status.className = 'error';
+        status.textContent = '❌ Ошибка: ' + err.message;
+        preview.style.display = 'none';
+      }
+    }
+
+    // Разрешить загрузку по Enter или drag & drop — по желанию
+  </script>
+</body>
+</html>

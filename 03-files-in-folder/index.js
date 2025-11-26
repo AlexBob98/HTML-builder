@@ -1,22 +1,30 @@
 const fs = require('fs');
 const path = require('path');
-const folder = (path.join(__dirname, 'secret-folder'));
 
-const fold = (path.join(__dirname, 'secret-folder'));
- a = fold.split('\\')
+const folderPath = path.join(__dirname, 'secret-folder');
 
-console.log('\x1b[36m%s\x1b[0m','File - Extension - Size:', "\x1b[37m")
-fs.readdir(folder, (err, files) => {
-    files.forEach((file) => {
-       const fileName = file.split('.')
-       fs.stat((path.join(__dirname, 'secret-folder', file)), (err, stats)=> {
-        let fileSizeInBytes = stats.size;
-        let kb = fileSizeInBytes / 1024 
-        if (stats.isFile()){
-        console.log(fileName[0] + ' - ' + fileName[fileName.length - 1] + ' - ' + kb.toFixed(3) + '\x1b[33m%s\x1b[0m', 'KB',"\x1b[37m")
-        }
-        if (err) throw err;
-    })
+fs.readdir(folderPath, (err, files) => {
+  if (err) {
+    console.error('Не удалось прочитать папку:', err);
+    return;
+  }
+
+  files.forEach(file => {
+    const filePath = path.join(folderPath, file);
+    console.log(fs);
+    fs.stat(filePath, (err, stats) => {
+      if (err) {
+        return;
+      }
+
+      if (stats.isFile()) {
+        const { name, ext } = path.parse(file);
+
+        const extension = ext ? ext.slice(1) : '';
+        const sizeInKb = (stats.size / 1024).toFixed(3);
+
+        console.log(`${name} - ${extension} - ${sizeInKb}kb`);
+      }
     });
   });
-
+});
